@@ -1,0 +1,33 @@
+# Define the custom search method
+greater_than_search <- function(value, index, searchValue) {
+# Only return rows where the value is greater than the search value
+as.numeric(value) > as.numeric(searchValue)
+}
+# Create the reactable table with the custom search method
+reactable(
+data = iris,
+searchMethod = greater_than_search,
+searchable = TRUE,
+defaultPageSize = 5)
+
+
+library(reactable)
+library(htmlwidgets)
+
+reactable(
+  data = iris,
+  columns = list(
+    Sepal.Length = colDef(
+      
+      searchable = TRUE)),
+  searchMethod = JS("function(rows, searchValue) {
+        // Only keep rows where Sepal.Length is greater than the searchValue
+        return rows.filter(function(row) {
+          return parseFloat(row.values['Sepal.Length']) > parseFloat(searchValue);
+        });
+      }"),
+  bordered = TRUE,
+  searchable = TRUE
+)
+
+

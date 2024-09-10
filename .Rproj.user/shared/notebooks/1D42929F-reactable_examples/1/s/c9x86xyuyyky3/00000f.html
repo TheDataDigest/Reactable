@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/core-js-2.5.3/shim.min.js"></script>
+<script src="lib/react-18.2.0/react.min.js"></script>
+<script src="lib/react-18.2.0/react-dom.min.js"></script>
+<script src="lib/reactwidget-2.0.0/react-tools.umd.cjs"></script>
+<link href="lib/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="lib/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<link href="lib/reactable-0.4.4/reactable.css" rel="stylesheet" />
+<script src="lib/reactable-binding-0.4.4/reactable.js"></script>
+
+</head>
+<body>
+<!-- htmlwidget-container-begin -->
+<h1 style="color:#000;background:#FFFFFF;text-align:left;font-size:32px;font-style:normal;font-weight:bold;text-decoration:;letter-spacing:px;word-spacing:px;text-transform:;text-shadow:;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px">Hawaiian Pizza Sales in 2015</h1>
+<h2 style="color:#000;background:#FFFFFF;text-align:left;font-size:24px;font-style:normal;font-weight:normal;text-decoration:;letter-spacing:px;word-spacing:px;text-transform:;text-shadow:;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px">Based on the fake pizzaplace data from `{gt}`</h2>
+<div class="reactable html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-800e948629a499b99bd2" style="color: #333;width:auto;height:auto;"></div>
+<!-- htmlwidget-container-end -->
+<script type="application/json" data-for="htmlwidget-800e948629a499b99bd2">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"month":["January","February","March","April","May","June","July","August","September","October","November","December"],"quarter":["Q1","Q1","Q1","Q2","Q2","Q2","Q3","Q3","Q3","Q4","Q4","Q4"],"sales":[185,198,217,219,198,189,195,201,196,188,227,209],"revenue":[2442.75,2633,2878.5,2867.75,2688,2563.75,2620.25,2678.75,2616.25,2514.75,2952.75,2816.75]},"columns":[{"id":"month","name":"Month","type":["ordered","factor"],"filterable":true},{"id":"quarter","name":"Quarter","type":"character"},{"id":"sales","name":"Sales","type":"numeric","aggregate":"sum","footer":"function(column, state) {\n        let total = 0\n        state.sortedData.forEach(function(row) {\n          total += row[column.id]\n        })\n        return total\n      }"},{"id":"revenue","name":"Revenue","type":"numeric","aggregate":"sum","format":{"cell":{"separators":true,"currency":"USD"},"aggregated":{"separators":true,"currency":"USD"}},"footer":"function(column, state) {\n        let total = 0\n        state.sortedData.forEach(function(row) {\n          total += row[column.id]\n        })\n        return total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })\n      }"}],"groupBy":["quarter"],"defaultExpanded":true,"dataKey":"5c2288766fdbcd514fabd968450a3b7f","static":false},"children":[]},"class":"reactR_markup"},"evals":["tag.attribs.columns.2.footer","tag.attribs.columns.3.footer"],"jsHooks":[]}</script>
+<!-- htmlwidget-sizing-policy-base64 PHNjcmlwdCB0eXBlPSJhcHBsaWNhdGlvbi9odG1sd2lkZ2V0LXNpemluZyIgZGF0YS1mb3I9Imh0bWx3aWRnZXQtODAwZTk0ODYyOWE0OTliOTliZDIiPnsidmlld2VyIjp7IndpZHRoIjoiYXV0byIsImhlaWdodCI6ImF1dG8iLCJwYWRkaW5nIjoxNSwiZmlsbCI6dHJ1ZX0sImJyb3dzZXIiOnsid2lkdGgiOiJhdXRvIiwiaGVpZ2h0IjoiYXV0byIsInBhZGRpbmciOjQwLCJmaWxsIjpmYWxzZX19PC9zY3JpcHQ+ -->
+</body>
+</html>

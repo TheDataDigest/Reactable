@@ -1,0 +1,323 @@
+---
+title: "reactable_examples"
+format: html
+echo: false
+messages: false
+---
+
+```{r}
+
+library(tidyverse)
+library(reactable)
+library(gt)
+library(reactablefmtr)
+
+hawaiian_sales <- gt::pizzaplace |> 
+  filter(name == 'hawaiian') |> 
+  mutate(
+    month = month(
+      date, label = TRUE, abbr = FALSE,
+      locale = 'en_US.UTF-8' # English month names
+    ),
+    quarter = paste0('Q', quarter(date))
+  ) |> 
+  summarise(
+    sales = n(),
+    revenue = sum(price),
+    .by = c(month, quarter)
+  )
+
+```
+
+
+### Titles and Subtitles
+
+```{r}
+reactable(
+  hawaiian_sales,
+  columns = list(
+    quarter = colDef(name = 'Quarter'),
+    month = colDef(name = 'Month'),
+    sales = colDef(name = 'Sales'),
+    revenue = colDef(name = 'Revenue')
+  )
+) |> 
+  reactablefmtr::add_title(
+    title = 'Hawaiian Pizza Sales in 2015'
+  ) |> 
+  reactablefmtr::add_subtitle(
+    subtitle = 'Based on the fake pizzaplace data from `{gt}`',
+    font_weight = 'normal'
+  )
+```
+
+### Format currency add groups
+
+```{r}
+reactable(
+  hawaiian_sales,
+  groupBy = 'quarter',
+  columns = list(
+    quarter = colDef(name = 'Quarter'),
+    month = colDef(name = 'Month'),
+    sales = colDef(name = 'Sales'),
+    revenue = colDef(
+      name = 'Revenue',
+      format = colFormat(currency = 'USD', separators = TRUE)
+    )
+  )
+) |> 
+  reactablefmtr::add_title(
+    title = 'Hawaiian Pizza Sales in 2015'
+  ) |> 
+  reactablefmtr::add_subtitle(
+    subtitle = 'Based on the fake pizzaplace data from `{gt}`',
+    font_weight = 'normal'
+  )
+```
+
+
+### Add summaries, make searchables
+
+```{r}
+reactable(
+  hawaiian_sales,
+  groupBy = 'quarter',
+  defaultExpanded = TRUE, # Expand rows by default
+  columns = list(
+    quarter = colDef(name = 'Quarter'),
+    month = colDef(
+      name = 'Month',
+      filterable = TRUE  # Make column filterable
+    ),
+    sales = colDef(
+      name = 'Sales',
+      aggregate = 'sum'
+    ),
+    revenue = colDef(
+      name = 'Revenue',
+      format = colFormat(currency = 'USD', separators = TRUE),
+      aggregate = 'sum'
+    )
+  )
+) |> 
+  reactablefmtr::add_title(
+    title = 'Hawaiian Pizza Sales in 2015'
+  ) |> 
+  reactablefmtr::add_subtitle(
+    subtitle = 'Based on the fake pizzaplace data from `{gt}`',
+    font_weight = 'normal'
+  )
+```
+
+
+### Add total footer
+```{r}
+reactable(
+  hawaiian_sales,
+  groupBy = 'quarter',
+  defaultExpanded = TRUE, 
+  columns = list(
+    quarter = colDef(name = 'Quarter'),
+    month = colDef(
+      name = 'Month',
+      filterable = TRUE  
+    ),
+    sales = colDef(
+      name = 'Sales',
+      aggregate = 'sum',
+      footer = function(values, name) {
+        sum(values)
+      }
+    ),
+    revenue = colDef(
+      name = 'Revenue',
+      format = colFormat(currency = 'USD', separators = TRUE),
+      aggregate = 'sum',
+      footer = function(values, name) {
+        sum(values) |> scales::dollar()
+      }
+    )
+  )
+) |> 
+  reactablefmtr::add_title(
+    title = 'Hawaiian Pizza Sales in 2015'
+  ) |> 
+  reactablefmtr::add_subtitle(
+    subtitle = 'Based on the fake pizzaplace data from `{gt}`',
+    font_weight = 'normal'
+  )
+```
+
+
+### Use JavaScript to calculate footer based on filter/search
+```{r}
+reactable(
+  hawaiian_sales,
+  groupBy = 'quarter',
+  defaultExpanded = TRUE,
+  columns = list(
+    quarter = colDef(name = 'Quarter'),
+    month = colDef(
+      name = 'Month',
+      filterable = TRUE 
+    ),
+    sales = colDef(
+      name = 'Sales',
+      aggregate = 'sum',
+      footer =  JS("function(column, state) {
+        let total = 0
+        state.sortedData.forEach(function(row) {
+          total += row[column.id]
+        })
+        return total
+      }"),
+    ),
+    revenue = colDef(
+      name = 'Revenue',
+      format = colFormat(currency = 'USD', separators = TRUE),
+      aggregate = 'sum',
+      footer =  JS("function(column, state) {
+        let total = 0
+        state.sortedData.forEach(function(row) {
+          total += row[column.id]
+        })
+        return total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+      }")
+    )
+  )
+) |> 
+  reactablefmtr::add_title(
+    title = 'Hawaiian Pizza Sales in 2015'
+  ) |> 
+  reactablefmtr::add_subtitle(
+    subtitle = 'Based on the fake pizzaplace data from `{gt}`',
+    font_weight = 'normal'
+  )
+```
+
+
+### Row styling
+```{r}
+reactable(
+  hawaiian_sales,
+  groupBy = 'quarter',
+  defaultExpanded = TRUE,
+  columns = list(
+    quarter = colDef(name = 'Quarter'),
+    month = colDef(
+      name = 'Month',
+      filterable = TRUE 
+    ),
+    sales = colDef(
+      name = 'Sales',
+      aggregate = 'sum',
+      footer =  JS("function(column, state) {
+        let total = 0
+        state.sortedData.forEach(function(row) {
+          total += row[column.id]
+        })
+        return total
+      }"),
+    ),
+    revenue = colDef(
+      name = 'Revenue',
+      format = colFormat(currency = 'USD', separators = TRUE),
+      aggregate = 'sum',
+      footer =  JS("function(column, state) {
+        let total = 0
+        state.sortedData.forEach(function(row) {
+          total += row[column.id]
+        })
+        return total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+      }")
+    )
+  ),
+  rowStyle = JS(
+    "function(rowInfo) {
+      if (rowInfo.level == 0) { // corresponds to row group
+        return { 
+          background: '#E7EDF3', 
+          borderLeft: '2px solid #104E8B',
+          fontWeight: 600
+        }
+      } 
+    }"
+  ),
+) |> 
+  reactablefmtr::add_title(
+    title = 'Hawaiian Pizza Sales in 2015'
+  ) |> 
+  reactablefmtr::add_subtitle(
+    subtitle = 'Based on the fake pizzaplace data from `{gt}`',
+    font_weight = 'normal'
+  )
+```
+
+  
+  
+### Change footer style
+```{r}
+reactable(
+  hawaiian_sales,
+  groupBy = 'quarter',
+  defaultExpanded = TRUE,
+  columns = list(
+    quarter = colDef(name = 'Quarter'),
+    month = colDef(
+      name = 'Month',
+      filterable = TRUE 
+    ),
+    sales = colDef(
+      name = 'Sales',
+      aggregate = 'sum',
+      footer =  JS("function(column, state) {
+        let total = 0
+        state.sortedData.forEach(function(row) {
+          total += row[column.id]
+        })
+        return total
+      }"),
+      footerStyle = htmltools::css(
+        font_weight = 600,
+        border_top = '2px solid black'
+      )
+    ),
+    revenue = colDef(
+      name = 'Revenue',
+      format = colFormat(currency = 'USD', separators = TRUE),
+      aggregate = 'sum',
+      footer =  JS("function(column, state) {
+        let total = 0
+        state.sortedData.forEach(function(row) {
+          total += row[column.id]
+        })
+        return total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+      }"),
+      footerStyle = htmltools::css(
+        font_weight = 600,
+        border_top = '2px solid black'
+      )
+    )
+  ),
+  rowStyle = JS(
+    "function(rowInfo) {
+      if (rowInfo.level == 0) { // corresponds to row group
+        return { 
+          background: '#E7EDF3', 
+          borderLeft: '2px solid #104E8B',
+          fontWeight: 600
+        }
+      } 
+    }"
+  ),
+) |> 
+  reactablefmtr::add_title(
+    title = 'Hawaiian Pizza Sales in 2015'
+  ) |> 
+  reactablefmtr::add_subtitle(
+    subtitle = 'Based on the fake pizzaplace data from `{gt}`',
+    font_weight = 'normal'
+  )
+```
+
